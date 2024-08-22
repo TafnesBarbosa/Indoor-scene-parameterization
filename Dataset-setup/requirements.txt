@@ -1,0 +1,8 @@
+# Python modules:
+os
+time
+opencv-python==4.10.0.84
+numpy==1.26.3
+
+# System commands:
+ffmpeg # version = 4.4.2-0ubuntu0.22.04.1+esm4
