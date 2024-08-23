@@ -5,3 +5,4 @@ numpy==1.26.3
 opencv-python==4.10.0.84
 json
 pandas==2.2.0
+matplotlib==3.8.3

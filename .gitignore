@@ -1,0 +1,18 @@
+# Ignore intermediate LaTeX files
+**/*.pdf
+
+
+
+
+# Except these files
+!.gitignore
+!**/*.tex
+!**/*.bib
+!**/*.hs
+!**/*.py
+!figs_orig/*.png
+!**/*.jpeg
+!figs_orig/*.pdf
+!Banca/*.pdf
+!**/*.babel
+!**/*.bst
