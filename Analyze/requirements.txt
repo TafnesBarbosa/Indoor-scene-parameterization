@@ -6,3 +6,8 @@ opencv-python==4.10.0.84
 json
 pandas==2.2.0
 matplotlib==3.8.3
+scikit-learn==1.5.1
+statsmodels==0.14.2
+
+# System comands
+pdflatex # version 3.141592653-2.6-1.40.22

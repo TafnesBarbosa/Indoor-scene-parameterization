@@ -2,7 +2,7 @@
 
 There is a specific readme file inside each folder of this repo.
 
-The dataset usde and results obtained in the paper may be found in [Pilot Study](https://drive.google.com/drive/folders/1OfeHh8-wha0dBBx-tQtzCN6a31vnCQNw?usp=drive_link) and [Indoor Scenes](https://drive.google.com/drive/folders/1XAl279F32Iswlbqscjb4qIZVxUqgwO05?usp=drive_link).
+The **dataset** used and results obtained in the paper may be found in [Pilot Study](https://drive.google.com/drive/folders/1OfeHh8-wha0dBBx-tQtzCN6a31vnCQNw?usp=drive_link) and [Indoor Scenes](https://drive.google.com/drive/folders/1XAl279F32Iswlbqscjb4qIZVxUqgwO05?usp=drive_link).
 
 All commands that used nerfstudio must run inside the folder nerfstudio is installed and with conda environment activated.
 

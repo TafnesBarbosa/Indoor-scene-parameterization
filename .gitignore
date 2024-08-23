@@ -1,6 +1,29 @@
 # Ignore intermediate LaTeX files
 **/*.pdf
-
+**/*.aux
+**/*.b*
+**/*.g*
+**/*.ist
+**/*.log
+**/*.out
+**/*.p*
+**/*.t*
+**/*.dvi
+**/.DS_Store
+**/*~
+**/*.el
+**/*.bib.sav
+**/*.bib.bak
+**/*.nav
+**/*.snm
+**/*.vrb
+**/*.lof
+**/*.lot
+**/*.rel
+**/*.run.xml
+**/*.acn
+**/*.acr
+**/*.alg
 
 
 

@@ -1,0 +1,542 @@
+\documentclass[]{article}
+\usepackage[english,brazilian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage[table]{xcolor}
+\usepackage[center]{caption}
+\usepackage{graphicx}
+\usepackage{gensymb}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{layout}
+\usepackage{appendix}
+\usepackage{amssymb}	
+\usepackage{pdfpages}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{cancel}
+\usepackage{setspace}	
+\usepackage{subfig}
+\usepackage{array,multirow}
+\usepackage[margin=1cm]{geometry}
+\usepackage{tikz}
+\usepackage{adjustbox}
+\usepackage{indentfirst}
+\usepackage{fancyhdr}
+\usepackage{makecell}
+
+\usetikzlibrary{arrows,automata}% para os grafos de estado
+\usetikzlibrary{calc}
+\usetikzlibrary{positioning}
+\usetikzlibrary{matrix,calc}
+
+\usepackage{color}
+
+\newcolumntype{M}[1]{>{\raggedright\arraybackslash}m{#1\linewidth-2\tabcolsep - 1.25\arrayrulewidth}}
+\newcolumntype{N}[1]{>{\centering\arraybackslash}m{#1\linewidth-2\tabcolsep - 1.25\arrayrulewidth}}
+
+\begin{document}
+
+%\begin{table}[H]
+%	\resizebox{\textwidth}{!}{%
+%	\begin{tabular}{lN{.11}N{.12}N{.12}N{.12}ccccccccccccccc}
+%		\toprule
+%		\multirow{3}{*}{\makecell[c]{\textbf{Cena}}} & \multirow{3}{*}{\makecell{\textbf{Right}\\\textbf{COLMAP}\\\textbf{Frequency}}}& \multirow{3}{*}{\makecell{\textbf{COLMAP}\\\textbf{Avg. Found}\\\textbf{Poses}}}& \multirow{3}{*}{\makecell{\textbf{Número}\\\textbf{de Frames}}} & \multirow{3}{*}{\makecell{\textbf{COLMAP}\\\textbf{Repetitions}}} & \multicolumn{2}{c}{\multirow{2}{*}{\makecell[c]{\textbf{Tempo (min)}}}} & \multicolumn{2}{c}{\multirow{2}{*}{\makecell[c]{\textbf{RAM (Gb)}}}} & \multicolumn{2}{c}{\multirow{2}{*}{\makecell[c]{\textbf{VRAM (GiB)}}}} & \multicolumn{3}{c}{\multirow{2}{*}{\makecell[c]{\textbf{Laplaciano}}}} & \multicolumn{6}{c}{\textbf{Métricas}}\\ 
+%		&&&&&&&&&&&&&&\multirow{2}{*}{\makecell{\textbf{Max.}\\\textbf{PSNR (dB)}}}&\multirow{2}{*}{\makecell{\textbf{Max. PSNR}\\\textbf{Iter.}}}&\multirow{2}{*}{\makecell{\textbf{Max.}\\\textbf{SSIM}}}&\multirow{2}{*}{\makecell{\textbf{Max. SSIM}\\\textbf{Iter.}}}&\multirow{2}{*}{\makecell{\textbf{Min.}\\\textbf{LPIPS}}}&\multirow{2}{*}{\makecell{\textbf{Min. LPIPS}\\\textbf{Iter.}}}\\
+%		&&&&&\textbf{COLMAP}&\textbf{Nerfacto}&\textbf{COLMAP}&\textbf{Nerfacto}&\textbf{COLMAP}&\textbf{Nerfacto}&\textbf{Mín}&\textbf{Média}&\textbf{Máx}&&&&&&\\
+%		\midrule
+%		% Preencher linhas da tabela abaixo:
+%		
+%		% Preencher linhas da tabela acima
+%		\bottomrule
+%		\multicolumn{20}{l}{Legenda: 1\_2\_3\_4\_5}\\
+%		\multicolumn{20}{l}{1 (ambiente): i -- interno}\\
+%		\multicolumn{20}{l}{2 (posição celular): h -- horizontal; v -- vertical}\\
+%		\multicolumn{20}{l}{3 (tempo de vídeo)}\\
+%		\multicolumn{20}{l}{4 (iluminação): a -- artificial; n -- natural}\\
+%		\multicolumn{20}{l}{5 (ângulo de filmagem): n -- normal; cn -- chao-normal; ct -- chao-teto; nt -- normal-teto}\\
+%		\bottomrule
+%	\end{tabular}}
+%\end{table}
+%\pagebreak
+%\begin{table}[H]
+%	\resizebox{.9\textwidth}{!}{%
+%		\begin{tabular}{lN{.12}N{.12}N{.12}N{.12}N{.12}N{.12}}
+%			\toprule
+%			\multirow{2}{*}{\textbf{Scene}} & \multicolumn{2}{c}{\textbf{Time}}      & \multicolumn{2}{c}{\textbf{RAM}}        & \multicolumn{2}{c}{\textbf{GPU}}        \\
+%			& \textbf{Nerfacto} & \textbf{Splatfacto} & \textbf{Nerfacto} & \textbf{Splatfacto} & \textbf{Nerfacto} & \textbf{Splatfacto} \\
+%			\midrule		
+%			i\_h\_30\_n\_n&59.60&\cellcolor{green!50}31.99&6.25&\cellcolor{green!50}4.29&2.36&\cellcolor{green!50}1.35\\
+%			i\_h\_60\_a\_nc&93.39&\cellcolor{green!50}31.57&5.99&\cellcolor{green!50}3.73&2.36&\cellcolor{green!50}1.32\\
+%			i\_h\_60\_n\_fn&58.44&\cellcolor{green!50}30.50&5.75&\cellcolor{green!50}3.62&2.36&\cellcolor{green!50}1.23\\
+%			i\_h\_60\_n\_nc&57.86&\cellcolor{green!50}30.56&5.84&\cellcolor{green!50}3.94&2.36&\cellcolor{green!50}1.23\\
+%			i\_v\_120\_n\_nc&57.81&\cellcolor{green!50}28.59&5.86&\cellcolor{green!50}3.77&2.36&\cellcolor{green!50}1.16\\
+%			i\_v\_30\_a\_fn&58.14&\cellcolor{green!50}29.42&5.93&\cellcolor{green!50}3.78&2.36&\cellcolor{green!50}1.18\\
+%			i\_v\_30\_a\_n&58.18&\cellcolor{green!50}29.88&6.04&\cellcolor{green!50}3.76&2.36&\cellcolor{green!50}1.20\\
+%			i\_v\_30\_n\_fn&58.94&\cellcolor{green!50}29.80&7.63&\cellcolor{green!50}3.55&2.36&\cellcolor{green!50}1.30\\
+%			i\_v\_30\_n\_nc&59.46&\cellcolor{green!50}28.89&6.53&\cellcolor{green!50}3.54&2.36&\cellcolor{green!50}1.26\\
+%			i\_v\_60\_n\_fn&59.78&\cellcolor{green!50}28.75&5.78&\cellcolor{green!50}3.50&2.36&\cellcolor{green!50}1.14\\
+%			i\_v\_60\_n\_nc&59.00&\cellcolor{green!50}30.20&6.12&\cellcolor{green!50}3.49&2.36&\cellcolor{green!50}1.23\\
+%			i\_h\_30\_n\_fn&59.88&\cellcolor{green!50}30.89&5.79&\cellcolor{green!50}3.58&2.36&\cellcolor{green!50}1.17\\
+%			i\_v\_120\_n\_fn&59.25&\cellcolor{green!50}28.53&5.89&\cellcolor{green!50}3.52&2.36&\cellcolor{green!50}1.16\\
+%			i\_h\_120\_a\_fn&59.10&\cellcolor{green!50}34.49&5.86&\cellcolor{green!50}3.99&2.36&\cellcolor{green!50}1.27\\
+%			i\_h\_120\_n\_fn&58.67&\cellcolor{green!50}30.44&5.75&\cellcolor{green!50}3.99&2.36&\cellcolor{green!50}1.20\\
+%			i\_h\_120\_n\_n&59.42&\cellcolor{green!50}30.56&5.80&\cellcolor{green!50}3.90&2.36&\cellcolor{green!50}1.19\\
+%			i\_h\_30\_a\_nc&87.82&\cellcolor{green!50}34.18&6.63&\cellcolor{green!50}4.02&2.36&\cellcolor{green!50}1.44\\
+%			i\_h\_120\_a\_fc&60.51&\cellcolor{green!50}30.81&5.91&\cellcolor{green!50}3.64&2.36&\cellcolor{green!50}1.21\\
+%			i\_v\_30\_n\_fc&58.86&\cellcolor{green!50}29.57&7.10&\cellcolor{green!50}3.53&2.36&\cellcolor{green!50}1.36\\
+%			i\_h\_30\_a\_fn&62.46&\cellcolor{green!50}32.59&6.54&\cellcolor{green!50}3.73&2.36&\cellcolor{green!50}1.38\\
+%			i\_v\_120\_a\_n&59.73&\cellcolor{green!50}29.35&5.89&\cellcolor{green!50}4.21&2.36&\cellcolor{green!50}1.31\\
+%			i\_v\_60\_a\_n&58.79&\cellcolor{green!50}31.37&6.06&\cellcolor{green!50}3.54&2.36&\cellcolor{green!50}1.26\\
+%			i\_h\_60\_n\_n&58.33&\cellcolor{green!50}30.58&5.57&\cellcolor{green!50}3.77&2.36&\cellcolor{green!50}1.20\\
+%			i\_h\_60\_a\_fc&60.16&\cellcolor{green!50}40.41&5.74&\cellcolor{green!50}4.03&2.36&\cellcolor{green!50}1.57\\
+%			i\_h\_120\_n\_nc&89.68&\cellcolor{green!50}30.78&5.84&\cellcolor{green!50}3.75&2.36&\cellcolor{green!50}1.18\\
+%			i\_h\_30\_a\_n&61.90&\cellcolor{green!50}33.37&6.45&\cellcolor{green!50}3.81&2.36&\cellcolor{green!50}1.35\\
+%			i\_v\_120\_n\_n&86.95&\cellcolor{green!50}27.08&5.92&\cellcolor{green!50}3.47&2.36&\cellcolor{green!50}1.17\\
+%			i\_h\_30\_n\_nc&59.03&\cellcolor{green!50}29.81&7.60&\cellcolor{green!50}3.93&2.36&\cellcolor{green!50}1.35\\
+%			i\_h\_30\_a\_fc&63.08&\cellcolor{green!50}34.58&6.54&\cellcolor{green!50}3.82&2.36&\cellcolor{green!50}1.42\\
+%			i\_v\_60\_a\_nc&58.91&\cellcolor{green!50}29.82&5.79&\cellcolor{green!50}3.80&2.36&\cellcolor{green!50}1.14\\
+%			i\_h\_120\_n\_fc&85.92&\cellcolor{green!50}30.98&5.90&\cellcolor{green!50}4.06&2.36&\cellcolor{green!50}1.22\\
+%			i\_h\_60\_a\_fn&59.37&\cellcolor{green!50}32.71&5.61&\cellcolor{green!50}4.00&2.36&\cellcolor{green!50}1.23\\
+%			i\_h\_60\_a\_n&59.00&\cellcolor{green!50}32.26&5.61&\cellcolor{green!50}3.69&2.36&\cellcolor{green!50}1.20\\
+%			i\_v\_60\_n\_fc&59.42&\cellcolor{green!50}29.77&6.12&\cellcolor{green!50}3.51&2.36&\cellcolor{green!50}1.22\\
+%			i\_v\_30\_n\_n&59.55&\cellcolor{green!50}28.80&7.34&\cellcolor{green!50}3.85&2.36&\cellcolor{green!50}1.32\\
+%			i\_h\_30\_n\_fc&59.99&\cellcolor{green!50}38.67&5.65&\cellcolor{green!50}3.96&\cellcolor{green!50}2.36&3.22\\
+%			i\_v\_60\_n\_n&81.35&\cellcolor{green!50}28.73&6.08&\cellcolor{green!50}3.53&2.36&\cellcolor{green!50}1.21\\
+%			i\_v\_60\_a\_fc&90.15&\cellcolor{green!50}29.16&5.89&\cellcolor{green!50}3.47&2.36&\cellcolor{green!50}1.16\\
+%			i\_v\_120\_n\_fc&58.12&\cellcolor{green!50}28.76&7.04&\cellcolor{green!50}3.46&2.36&\cellcolor{green!50}1.16\\
+%			i\_h\_60\_n\_fc&70.56&\cellcolor{green!50}30.69&5.67&\cellcolor{green!50}3.89&2.36&\cellcolor{green!50}1.23\\
+%			i\_v\_120\_a\_nc&59.19&\cellcolor{green!50}29.19&5.90&\cellcolor{green!50}3.66&2.36&\cellcolor{green!50}1.16\\
+%			i\_h\_120\_a\_nc&58.56&\cellcolor{green!50}33.04&5.78&\cellcolor{green!50}4.04&2.36&\cellcolor{green!50}1.24\\
+%			i\_v\_120\_a\_fn&62.87&\cellcolor{green!50}23.63&3.60&\cellcolor{green!50}3.41&2.35&\cellcolor{green!50}0.53\\
+%			i\_v\_30\_a\_fc&58.35&\cellcolor{green!50}28.85&5.94&\cellcolor{green!50}3.78&2.36&\cellcolor{green!50}1.16\\
+%			i\_v\_30\_a\_nc&59.75&\cellcolor{green!50}22.93&3.73&\cellcolor{green!50}3.59&2.35&\cellcolor{green!50}0.53\\
+%			i\_v\_120\_a\_fc&60.41&\cellcolor{green!50}26.95&3.61&\cellcolor{green!50}3.42&2.35&\cellcolor{green!50}0.53\\
+%			i\_v\_60\_a\_fn&60.65&\cellcolor{green!50}25.82&3.76&\cellcolor{green!50}3.49&2.35&\cellcolor{green!50}0.52\\
+%			i\_h\_120\_a\_n&58.46&\cellcolor{green!50}34.75&5.76&\cellcolor{green!50}3.72&2.36&\cellcolor{green!50}1.23\\
+%			
+%			\bottomrule
+%			\multicolumn{7}{l}{Legend: 1\_2\_3\_4\_5}\\
+%			\multicolumn{7}{l}{1 (environment): i -- inside}\\
+%			\multicolumn{7}{l}{2 (cellphone position): h -- horizontal; v -- vertical}\\
+%			\multicolumn{7}{l}{3 (duration)}\\
+%			\multicolumn{7}{l}{4 (illumination): a -- artificial; n -- natural}\\
+%			\multicolumn{7}{l}{5 (shooting angle): n -- normal; fn -- floor-normal; fc -- floor-ceiling; nc -- normal-ceiling}\\
+%			\bottomrule
+%		\end{tabular}
+%	}
+%\end{table}
+%
+%\pagebreak
+%\begin{table}[H]
+%	\resizebox{.9\textwidth}{!}{%
+%		\begin{tabular}{lN{.12}N{.12}N{.12}N{.12}N{.12}N{.12}}
+%			\toprule
+%			\multirow{2}{*}{\textbf{Scene}} & \multicolumn{2}{c}{\textbf{Max PSNR}}      & \multicolumn{2}{c}{\textbf{Max SSIM}}        & \multicolumn{2}{c}{\textbf{Min LPIPS}}        \\
+%			& \textbf{Nerfacto} & \textbf{Splatfacto} & \textbf{Nerfacto} & \textbf{Splatfacto} & \textbf{Nerfacto} & \textbf{Splatfacto} \\
+%			\midrule		
+%			i\_h\_30\_n\_n&25.11&\cellcolor{green!50}34.29&0.94&\cellcolor{green!50}0.97&0.13&\cellcolor{green!50}0.11\\
+%			i\_h\_60\_a\_nc&6.12&\cellcolor{green!50}34.37&0.01&\cellcolor{green!50}0.97&0.88&\cellcolor{green!50}0.12\\
+%			i\_h\_60\_n\_fn&26.01&\cellcolor{green!50}33.91&0.94&\cellcolor{green!50}0.96&0.13&\cellcolor{green!50}0.11\\
+%			i\_h\_60\_n\_nc&25.11&\cellcolor{green!50}35.81&0.95&\cellcolor{green!50}0.97&0.13&\cellcolor{green!50}0.11\\
+%			i\_v\_120\_n\_nc&27.05&\cellcolor{green!50}34.88&0.95&\cellcolor{green!50}0.97&0.15&\cellcolor{green!50}0.12\\
+%			i\_v\_30\_a\_fn&24.38&\cellcolor{green!50}34.62&0.93&\cellcolor{green!50}0.97&0.14&\cellcolor{green!50}0.11\\
+%			i\_v\_30\_a\_n&25.73&\cellcolor{green!50}35.66&0.95&\cellcolor{green!50}0.97&0.11&\cellcolor{green!50}0.08\\
+%			i\_v\_30\_n\_fn&26.70&\cellcolor{green!50}35.31&0.94&\cellcolor{green!50}0.97&0.15&\cellcolor{green!50}0.12\\
+%			i\_v\_30\_n\_nc&28.56&\cellcolor{green!50}38.06&0.95&\cellcolor{green!50}0.98&0.14&\cellcolor{green!50}0.11\\
+%			i\_v\_60\_n\_fn&26.80&\cellcolor{green!50}32.83&0.94&\cellcolor{green!50}0.97&0.15&\cellcolor{green!50}0.13\\
+%			i\_v\_60\_n\_nc&26.33&\cellcolor{green!50}36.11&0.95&\cellcolor{green!50}0.98&0.13&\cellcolor{green!50}0.11\\
+%			i\_h\_30\_n\_fn&25.72&\cellcolor{green!50}33.97&0.93&\cellcolor{green!50}0.96&0.13&\cellcolor{green!50}0.10\\
+%			i\_v\_120\_n\_fn&27.46&\cellcolor{green!50}34.49&0.94&\cellcolor{green!50}0.97&0.15&\cellcolor{green!50}0.12\\
+%			i\_h\_120\_a\_fn&21.11&\cellcolor{green!50}32.51&0.92&\cellcolor{green!50}0.96&0.14&\cellcolor{green!50}0.12\\
+%			i\_h\_120\_n\_fn&26.34&\cellcolor{green!50}32.90&0.93&\cellcolor{green!50}0.96&0.13&\cellcolor{green!50}0.11\\
+%			i\_h\_120\_n\_n&26.24&\cellcolor{green!50}34.83&0.95&\cellcolor{green!50}0.97&0.12&\cellcolor{green!50}0.10\\
+%			i\_h\_30\_a\_nc&21.25&\cellcolor{green!50}36.78&0.93&\cellcolor{green!50}0.97&0.14&\cellcolor{green!50}0.11\\
+%			i\_h\_120\_a\_fc&19.41&\cellcolor{green!50}24.62&0.80&\cellcolor{green!50}0.91&0.37&\cellcolor{green!50}0.24\\
+%			i\_v\_30\_n\_fc&26.35&\cellcolor{green!50}36.73&0.95&\cellcolor{green!50}0.97&0.14&\cellcolor{green!50}0.11\\
+%			i\_h\_30\_a\_fn&21.95&\cellcolor{green!50}33.62&0.92&\cellcolor{green!50}0.96&0.14&\cellcolor{green!50}0.11\\
+%			i\_v\_120\_a\_n&30.64&\cellcolor{green!50}35.36&0.95&\cellcolor{green!50}0.97&0.09&\cellcolor{green!50}0.07\\
+%			i\_v\_60\_a\_n&23.86&\cellcolor{green!50}35.15&0.95&\cellcolor{green!50}0.97&0.12&\cellcolor{green!50}0.10\\
+%			i\_h\_60\_n\_n&26.24&\cellcolor{green!50}34.60&0.94&\cellcolor{green!50}0.97&0.12&\cellcolor{green!50}0.11\\
+%			i\_h\_60\_a\_fc&17.98&\cellcolor{green!50}27.58&0.78&\cellcolor{green!50}0.92&0.40&\cellcolor{green!50}0.22\\
+%			i\_h\_120\_n\_nc&24.96&\cellcolor{green!50}34.51&0.94&\cellcolor{green!50}0.97&0.14&\cellcolor{green!50}0.12\\
+%			i\_h\_30\_a\_n&23.22&\cellcolor{green!50}35.21&0.94&\cellcolor{green!50}0.97&0.12&\cellcolor{green!50}0.10\\
+%			i\_v\_120\_n\_n&26.71&\cellcolor{green!50}30.08&0.94&\cellcolor{green!50}0.97&0.14&\cellcolor{green!50}0.13\\
+%			i\_h\_30\_n\_nc&26.23&\cellcolor{green!50}36.34&0.95&\cellcolor{green!50}0.97&0.14&\cellcolor{green!50}0.11\\
+%			i\_h\_30\_a\_fc&18.91&\cellcolor{green!50}32.32&0.82&\cellcolor{green!50}0.95&0.33&\cellcolor{green!50}0.14\\
+%			i\_v\_60\_a\_nc&25.79&\cellcolor{green!50}34.79&0.95&\cellcolor{green!50}0.97&0.13&\cellcolor{green!50}0.10\\
+%			i\_h\_120\_n\_fc&25.19&\cellcolor{green!50}33.63&0.93&\cellcolor{green!50}0.97&0.15&\cellcolor{green!50}0.12\\
+%			i\_h\_60\_a\_fn&21.75&\cellcolor{green!50}31.37&0.91&\cellcolor{green!50}0.95&0.16&\cellcolor{green!50}0.14\\
+%			i\_h\_60\_a\_n&23.77&\cellcolor{green!50}34.59&0.94&\cellcolor{green!50}0.97&0.13&\cellcolor{green!50}0.11\\
+%			i\_v\_60\_n\_fc&26.67&\cellcolor{green!50}35.53&0.95&\cellcolor{green!50}0.97&0.14&\cellcolor{green!50}0.12\\
+%			i\_v\_30\_n\_n&29.79&\cellcolor{green!50}37.59&0.96&\cellcolor{green!50}0.98&0.12&\cellcolor{green!50}0.10\\
+%			i\_h\_30\_n\_fc&15.99&\cellcolor{green!50}18.67&0.70&\cellcolor{green!50}0.80&0.57&\cellcolor{green!50}0.45\\
+%			i\_v\_60\_n\_n&29.61&\cellcolor{green!50}36.97&0.95&\cellcolor{green!50}0.97&0.12&\cellcolor{green!50}0.10\\
+%			i\_v\_60\_a\_fc&24.14&\cellcolor{green!50}34.70&0.93&\cellcolor{green!50}0.97&0.16&\cellcolor{green!50}0.11\\
+%			i\_v\_120\_n\_fc&26.12&\cellcolor{green!50}32.59&0.94&\cellcolor{green!50}0.97&0.17&\cellcolor{green!50}0.14\\
+%			i\_h\_60\_n\_fc&25.07&\cellcolor{green!50}34.01&0.94&\cellcolor{green!50}0.96&0.14&\cellcolor{green!50}0.12\\
+%			i\_v\_120\_a\_nc&25.64&\cellcolor{green!50}33.82&0.94&\cellcolor{green!50}0.97&0.14&\cellcolor{green!50}0.11\\
+%			i\_h\_120\_a\_nc&22.05&\cellcolor{green!50}31.88&0.92&\cellcolor{green!50}0.96&0.14&\cellcolor{green!50}0.12\\
+%			i\_v\_120\_a\_fn&&&&&&\\
+%			i\_v\_30\_a\_fc&24.72&\cellcolor{green!50}35.65&0.93&\cellcolor{green!50}0.97&0.15&\cellcolor{green!50}0.11\\
+%			i\_v\_30\_a\_nc&&&&&&\\
+%			i\_v\_120\_a\_fc&&&&&&\\
+%			i\_v\_60\_a\_fn&&&&&&\\
+%			i\_h\_120\_a\_n&21.08&\cellcolor{green!50}34.43&0.93&\cellcolor{green!50}0.97&0.14&\cellcolor{green!50}0.12\\
+%			\bottomrule
+%			\multicolumn{7}{l}{Legend: 1\_2\_3\_4\_5}\\
+%			\multicolumn{7}{l}{1 (environment): i -- inside}\\
+%			\multicolumn{7}{l}{2 (cellphone position): h -- horizontal; v -- vertical}\\
+%			\multicolumn{7}{l}{3 (duration)}\\
+%			\multicolumn{7}{l}{4 (illumination): a -- artificial; n -- natural}\\
+%			\multicolumn{7}{l}{5 (shooting angle): n -- normal; fn -- floor-normal; fc -- floor-ceiling; nc -- normal-ceiling}\\
+%			\bottomrule
+%		\end{tabular}
+%	}
+%\end{table}
+%
+%\pagebreak
+%\begin{table}[H]
+%	\resizebox{.9\textwidth}{!}{%
+%		\begin{tabular}{lN{.12}N{.12}N{.12}N{.12}N{.12}N{.12}}
+%			\toprule
+%			\multirow{2}{*}{\textbf{Cena}} & \multicolumn{2}{c}{\textbf{Max PSNR Iteration}}      & \multicolumn{2}{c}{\textbf{Max Iteration SSIM}}        & \multicolumn{2}{c}{\textbf{Min LPIPS Iteration}}        \\
+%			& \textbf{Nerfacto} & \textbf{Splatfacto} & \textbf{Nerfacto} & \textbf{Splatfacto} & \textbf{Nerfacto} & \textbf{Splatfacto} \\
+%			\midrule		
+%			i\_h\_30\_n\_n&\cellcolor{green!50}50k&70k&\cellcolor{green!50}90k&99k&\cellcolor{green!50}50k&80k\\
+%			i\_h\_60\_a\_nc&\cellcolor{green!50}10k&80k&\cellcolor{green!50}10k&70k&\cellcolor{green!50}10k&90k\\
+%			i\_h\_60\_n\_fn&\cellcolor{green!50}30k&70k&99k&\cellcolor{green!50}60k&\cellcolor{green!50}40k&90k\\
+%			i\_h\_60\_n\_nc&\cellcolor{green!50}20k&80k&99k&\cellcolor{green!50}80k&\cellcolor{green!50}60k&80k\\
+%			i\_v\_120\_n\_nc&\cellcolor{green!50}40k&90k&99k&\cellcolor{green!50}99k&60k&\cellcolor{green!50}60k\\
+%			i\_v\_30\_a\_fn&\cellcolor{green!50}40k&70k&\cellcolor{green!50}40k&90k&\cellcolor{green!50}40k&70k\\
+%			i\_v\_30\_a\_n&\cellcolor{green!50}20k&90k&\cellcolor{green!50}50k&80k&\cellcolor{green!50}40k&80k\\
+%			i\_v\_30\_n\_fn&\cellcolor{green!50}20k&60k&90k&\cellcolor{green!50}60k&\cellcolor{green!50}50k&60k\\
+%			i\_v\_30\_n\_nc&\cellcolor{green!50}10k&50k&90k&\cellcolor{green!50}50k&\cellcolor{green!50}40k&50k\\
+%			i\_v\_60\_n\_fn&\cellcolor{green!50}10k&99k&99k&\cellcolor{green!50}60k&\cellcolor{green!50}50k&99k\\
+%			i\_v\_60\_n\_nc&\cellcolor{green!50}10k&40k&80k&\cellcolor{green!50}40k&\cellcolor{green!50}40k&50k\\
+%			i\_h\_30\_n\_fn&\cellcolor{green!50}20k&90k&\cellcolor{green!50}80k&99k&80k&\cellcolor{green!50}60k\\
+%			i\_v\_120\_n\_fn&\cellcolor{green!50}20k&90k&90k&\cellcolor{green!50}90k&\cellcolor{green!50}30k&99k\\
+%			i\_h\_120\_a\_fn&\cellcolor{green!50}10k&99k&\cellcolor{green!50}80k&99k&\cellcolor{green!50}40k&90k\\
+%			i\_h\_120\_n\_fn&\cellcolor{green!50}20k&60k&99k&\cellcolor{green!50}40k&60k&\cellcolor{green!50}40k\\
+%			i\_h\_120\_n\_n&\cellcolor{green!50}10k&60k&99k&\cellcolor{green!50}60k&\cellcolor{green!50}30k&60k\\
+%			i\_h\_30\_a\_nc&\cellcolor{green!50}10k&90k&\cellcolor{green!50}20k&90k&\cellcolor{green!50}20k&90k\\
+%			i\_h\_120\_a\_fc&\cellcolor{green!50}10k&99k&\cellcolor{green!50}10k&80k&\cellcolor{green!50}20k&99k\\
+%			i\_v\_30\_n\_fc&\cellcolor{green!50}20k&60k&90k&\cellcolor{green!50}70k&\cellcolor{green!50}50k&70k\\
+%			i\_h\_30\_a\_fn&\cellcolor{green!50}30k&99k&\cellcolor{green!50}70k&90k&\cellcolor{green!50}30k&99k\\
+%			i\_v\_120\_a\_n&\cellcolor{green!50}30k&90k&99k&\cellcolor{green!50}20k&60k&\cellcolor{green!50}40k\\
+%			i\_v\_60\_a\_n&\cellcolor{green!50}40k&99k&\cellcolor{green!50}70k&99k&\cellcolor{green!50}20k&99k\\
+%			i\_h\_60\_n\_n&\cellcolor{green!50}10k&90k&99k&\cellcolor{green!50}99k&\cellcolor{green!50}30k&99k\\
+%			i\_h\_60\_a\_fc&\cellcolor{green!50}10k&60k&\cellcolor{green!50}10k&70k&\cellcolor{green!50}10k&70k\\
+%			i\_h\_120\_n\_nc&\cellcolor{green!50}20k&90k&\cellcolor{green!50}20k&90k&\cellcolor{green!50}20k&60k\\
+%			i\_h\_30\_a\_n&\cellcolor{green!50}40k&99k&\cellcolor{green!50}60k&99k&\cellcolor{green!50}50k&90k\\
+%			i\_v\_120\_n\_n&\cellcolor{green!50}20k&80k&\cellcolor{green!50}20k&90k&\cellcolor{green!50}20k&40k\\
+%			i\_h\_30\_n\_nc&\cellcolor{green!50}10k&90k&99k&\cellcolor{green!50}90k&\cellcolor{green!50}20k&90k\\
+%			i\_h\_30\_a\_fc&\cellcolor{green!50}10k&99k&\cellcolor{green!50}10k&99k&\cellcolor{green!50}10k&99k\\
+%			i\_v\_60\_a\_nc&\cellcolor{green!50}40k&99k&99k&\cellcolor{green!50}99k&\cellcolor{green!50}40k&99k\\
+%			i\_h\_120\_n\_fc&\cellcolor{green!50}10k&99k&\cellcolor{green!50}20k&50k&\cellcolor{green!50}20k&60k\\
+%			i\_h\_60\_a\_fn&\cellcolor{green!50}10k&70k&\cellcolor{green!50}30k&70k&\cellcolor{green!50}20k&70k\\
+%			i\_h\_60\_a\_n&\cellcolor{green!50}80k&90k&80k&\cellcolor{green!50}60k&\cellcolor{green!50}40k&99k\\
+%			i\_v\_60\_n\_fc&\cellcolor{green!50}10k&99k&99k&\cellcolor{green!50}30k&\cellcolor{green!50}60k&99k\\
+%			i\_v\_30\_n\_n&\cellcolor{green!50}10k&60k&90k&\cellcolor{green!50}60k&\cellcolor{green!50}30k&60k\\
+%			i\_h\_30\_n\_fc&\cellcolor{green!50}10k&90k&20k&\cellcolor{green!50}20k&\cellcolor{green!50}20k&90k\\
+%			i\_v\_60\_n\_n&\cellcolor{green!50}10k&99k&40k&\cellcolor{green!50}40k&\cellcolor{green!50}30k&40k\\
+%			i\_v\_60\_a\_fc&\cellcolor{green!50}10k&99k&\cellcolor{green!50}10k&90k&\cellcolor{green!50}10k&99k\\
+%			i\_v\_120\_n\_fc&\cellcolor{green!50}10k&99k&90k&\cellcolor{green!50}70k&\cellcolor{green!50}30k&99k\\
+%			i\_h\_60\_n\_fc&\cellcolor{green!50}10k&50k&60k&\cellcolor{green!50}50k&\cellcolor{green!50}40k&50k\\
+%			i\_v\_120\_a\_nc&\cellcolor{green!50}20k&90k&\cellcolor{green!50}20k&99k&\cellcolor{green!50}30k&99k\\
+%			i\_h\_120\_a\_nc&\cellcolor{green!50}10k&99k&\cellcolor{green!50}50k&99k&\cellcolor{green!50}70k&99k\\
+%			i\_v\_120\_a\_fn&&&&&&\\
+%			i\_v\_30\_a\_fc&\cellcolor{green!50}20k&90k&\cellcolor{green!50}40k&99k&\cellcolor{green!50}60k&99k\\
+%			i\_v\_30\_a\_nc&&&&&&\\
+%			i\_v\_120\_a\_fc&&&&&&\\
+%			i\_v\_60\_a\_fn&&&&&&\\
+%			i\_h\_120\_a\_n&\cellcolor{green!50}30k&90k&\cellcolor{green!50}30k&90k&\cellcolor{green!50}30k&90k\\
+%			\bottomrule
+%			\multicolumn{7}{l}{Legend: 1\_2\_3\_4\_5}\\
+%			\multicolumn{7}{l}{1 (environment): i -- inside}\\
+%			\multicolumn{7}{l}{2 (cellphone position): h -- horizontal; v -- vertical}\\
+%			\multicolumn{7}{l}{3 (duration)}\\
+%			\multicolumn{7}{l}{4 (illumination): a -- artificial; n -- natural}\\
+%			\multicolumn{7}{l}{5 (shooting angle): n -- normal; fn -- floor-normal; fc -- floor-ceiling; nc -- normal-ceiling}\\
+%			\bottomrule
+%		\end{tabular}
+%	}
+%\end{table}
+%\pagebreak
+%\begin{table}[H]
+%	\resizebox{\textwidth}{!}{%
+%		\begin{tabular}{lN{.11}N{.12}N{.12}N{.12}ccccccccccccccc}
+%			\toprule
+%			\multirow{3}{*}{\makecell[c]{\textbf{Cena}}} & \multirow{3}{*}{\makecell{\textbf{Right}\\\textbf{COLMAP}\\\textbf{Frequency}}}& \multirow{3}{*}{\makecell{\textbf{COLMAP}\\\textbf{Avg. Found}\\\textbf{Poses}}}& \multirow{3}{*}{\makecell{\textbf{Número}\\\textbf{de Frames}}} & \multirow{3}{*}{\makecell{\textbf{COLMAP}\\\textbf{Repetitions}}} & \multicolumn{2}{c}{\multirow{2}{*}{\makecell[c]{\textbf{Tempo (min)}}}} & \multicolumn{2}{c}{\multirow{2}{*}{\makecell[c]{\textbf{RAM (Gb)}}}} & \multicolumn{2}{c}{\multirow{2}{*}{\makecell[c]{\textbf{VRAM (GiB)}}}} & \multicolumn{3}{c}{\multirow{2}{*}{\makecell[c]{\textbf{Laplaciano}}}} & \multicolumn{6}{c}{\textbf{Métricas}}\\ 
+%			&&&&&&&&&&&&&&\multirow{2}{*}{\makecell{\textbf{Max.}\\\textbf{PSNR (dB)}}}&\multirow{2}{*}{\makecell{\textbf{Max. PSNR}\\\textbf{Iter.}}}&\multirow{2}{*}{\makecell{\textbf{Max.}\\\textbf{SSIM}}}&\multirow{2}{*}{\makecell{\textbf{Max. SSIM}\\\textbf{Iter.}}}&\multirow{2}{*}{\makecell{\textbf{Min.}\\\textbf{LPIPS}}}&\multirow{2}{*}{\makecell{\textbf{Min. LPIPS}\\\textbf{Iter.}}}\\
+%			&&&&&\textbf{COLMAP}&\textbf{Nerfacto}&\textbf{COLMAP}&\textbf{Nerfacto}&\textbf{COLMAP}&\textbf{Nerfacto}&\textbf{Mín}&\textbf{Média}&\textbf{Máx}&&&&&&\\
+%			\midrule
+%			% Preencher linhas da tabela abaixo:
+%			e\_v\_120\_s\_ct&100.0&100.00&318&1&16.74&59.73&4.13&5.73&4.15&2.36&716.43&1240.66&2188.15&19.53&10k&0.55&99k&0.24&99k\\
+%			e\_v\_120\_s\_nt&100.0&100.00&327&1&19.02&59.22&4.06&5.78&4.15&2.36&728.29&1246.17&1941.62&21.39&60k&0.70&99k&0.19&99k\\
+%			e\_v\_30\_s\_cn&100.0&100.00&301&1&17.01&59.61&4.08&5.60&4.15&2.35&634.15&1185.89&2115.36&20.47&60k&0.64&99k&0.23&99k\\
+%			e\_v\_30\_s\_ct&100.0&100.00&305&1&16.85&91.57&4.08&5.69&4.15&2.36&552.35&1132.00&2448.06&20.01&10k&0.56&10k&0.33&10k\\
+%			e\_v\_30\_s\_n&100.0&100.00&357&1&26.37&91.28&4.65&5.94&4.15&2.36&611.80&1034.83&1622.59&20.20&10k&0.49&10k&0.32&10k\\
+%			e\_v\_60\_s\_ct&100.0&100.00&325&1&17.78&61.43&4.12&5.77&4.15&2.36&454.87&1237.66&2326.31&20.30&20k&0.60&99k&0.23&99k\\
+%			e\_v\_60\_s\_nt&100.0&100.00&360&1&23.12&61.97&4.27&6.00&4.15&2.36&662.87&1134.57&1800.96&20.99&20k&0.64&99k&0.18&99k\\
+%			e\_h\_120\_s\_cn&100.0&100.00&307&1&16.80&93.70&4.14&5.61&4.15&2.36&890.75&1339.01&2621.01&21.18&10k&0.59&10k&0.27&10k\\
+%			e\_h\_120\_s\_ct&100.0&100.00&302&1&16.03&92.70&4.11&5.58&4.15&2.35&567.09&1215.45&2832.83&20.41&10k&0.54&20k&0.26&20k\\
+%			e\_h\_60\_s\_cn&100.0&100.00&325&1&19.10&60.93&4.13&5.92&4.15&2.36&881.04&1324.27&2460.27&21.52&90k&0.65&99k&0.17&99k\\
+%			e\_h\_120\_s\_n&90.0&90.09&327&1&20.18&61.06&4.11&5.74&4.15&2.36&736.12&1150.95&1599.13&22.69&99k&0.71&99k&0.13&99k\\
+%			e\_h\_30\_s\_n&90.0&90.07&433&1&64.06&61.09&4.74&7.77&4.15&2.36&902.71&1235.03&2429.03&25.09&90k&0.82&99k&0.11&99k\\
+%			e\_v\_60\_s\_n&80.0&80.18&325&1&22.59&61.58&4.10&5.73&4.15&2.36&425.42&1115.76&1813.92&20.66&40k&0.63&99k&0.21&99k\\
+%			e\_h\_30\_s\_cn&80.0&80.26&306&1&22.05&61.56&4.09&5.73&4.15&2.36&788.19&1185.81&2373.52&22.60&80k&0.72&99k&0.15&99k\\
+%			e\_h\_60\_s\_n&80.0&80.17&351&2&45.35&60.64&4.21&6.05&4.15&2.36&806.64&1176.28&1779.35&24.84&99k&0.82&99k&0.12&99k\\
+%			e\_v\_120\_s\_n&60.0&60.32&315&1&18.98&59.39&4.05&5.80&4.15&2.36&568.74&1256.13&1777.54&19.74&10k&0.58&90k&0.21&99k\\
+%			e\_v\_60\_s\_cn&50.0&50.97&309&3&58.75&61.98&4.14&5.69&4.15&2.36&851.66&1316.44&2591.99&20.33&99k&0.64&99k&0.23&99k\\
+%			e\_h\_120\_s\_nt&50.0&50.33&302&1&17.22&61.18&4.06&6.06&4.15&2.35&562.30&1079.26&2418.15&21.26&99k&0.62&99k&0.14&99k\\
+%			e\_v\_30\_s\_nt&40.0&40.54&335&3&59.08&61.80&4.14&5.82&4.15&2.36&683.73&1085.60&1695.29&21.41&40k&0.68&99k&0.16&99k\\
+%			e\_v\_120\_s\_cn&20.0&21.04&327&2&35.89&58.53&4.10&5.96&4.15&2.36&649.86&1278.41&2348.25&19.66&30k&0.58&80k&0.24&99k\\
+%			e\_h\_60\_s\_nt&10.0&10.84&320&3&55.13&62.24&4.12&3.86&4.15&2.35&462.79&1022.84&2002.25&&&&&&\\
+%			e\_h\_30\_s\_ct&0.0&1.15&305&3&51.30&64.88&4.07&3.71&4.15&2.35&535.93&992.79&2400.94&&&&&&\\
+%			e\_h\_30\_s\_nt&0.0&0.96&311&3&53.33&63.63&4.08&3.75&4.15&2.35&428.77&984.71&1913.64&&&&&&\\
+%			e\_h\_60\_s\_ct&0.0&1.28&312&3&48.52&0.12&4.10&2.41&4.15&0.01&586.89&1169.50&2877.13&&&&&&\\
+%			% Preencher linhas da tabela acima
+%			\bottomrule
+%			\multicolumn{20}{l}{Legenda: 1\_2\_3\_4\_5}\\
+%			\multicolumn{20}{l}{1 (ambiente): e -- externo}\\
+%			\multicolumn{20}{l}{2 (posição celular): h -- horizontal; v -- vertical}\\
+%			\multicolumn{20}{l}{3 (tempo de vídeo)}\\
+%			\multicolumn{20}{l}{4 (iluminação): s -- sol}\\
+%			\multicolumn{20}{l}{5 (ângulo de filmagem): n -- normal; cn -- chao-normal; ct -- chao-teto; nt -- normal-teto}\\
+%			\bottomrule
+%	\end{tabular}}
+%\end{table}
+%\pagebreak
+%\begin{table}[H]
+%	\resizebox{\textwidth}{!}{%
+%		\begin{tabular}{lN{.12}N{.12}N{.12}N{.12}N{.12}N{.12}}
+%			\toprule
+%			\multirow{2}{*}{\textbf{Scene}} & \multicolumn{2}{c}{\textbf{Time}}      & \multicolumn{2}{c}{\textbf{RAM}}        & \multicolumn{2}{c}{\textbf{GPU}}        \\
+%			& \textbf{Nerfacto} & \textbf{Splatfacto} & \textbf{Nerfacto} & \textbf{Splatfacto} & \textbf{Nerfacto} & \textbf{Splatfacto} \\
+%			\midrule		
+%			o\_v\_120\_s\_fc&59.73&\cellcolor{green!50}59.27&5.73&\cellcolor{green!50}3.87&\cellcolor{green!50}2.36&2.67\\
+%			o\_v\_120\_s\_nc&59.22&\cellcolor{green!50}56.10&5.78&\cellcolor{green!50}3.79&2.36&\cellcolor{green!50}2.35\\
+%			o\_v\_30\_s\_fn&\cellcolor{green!50}59.61&60.81&5.60&\cellcolor{green!50}3.69&\cellcolor{green!50}2.35&2.66\\
+%			o\_v\_30\_s\_fc&91.57&\cellcolor{green!50}59.32&5.69&\cellcolor{green!50}3.68&\cellcolor{green!50}2.36&2.62\\
+%			o\_v\_30\_s\_n&91.28&\cellcolor{green!50}59.44&5.94&\cellcolor{green!50}3.70&\cellcolor{green!50}2.36&2.58\\
+%			o\_v\_60\_s\_fc&\cellcolor{green!50}61.43&61.71&5.77&\cellcolor{green!50}3.69&\cellcolor{green!50}2.36&2.66\\
+%			o\_v\_60\_s\_nc&61.97&\cellcolor{green!50}54.45&6.00&\cellcolor{green!50}3.67&2.36&\cellcolor{green!50}2.23\\
+%			o\_h\_120\_s\_fn&93.70&\cellcolor{green!50}57.02&5.61&\cellcolor{green!50}3.88&2.36&\cellcolor{green!50}2.11\\
+%			o\_h\_120\_s\_fc&92.70&\cellcolor{green!50}55.96&5.58&\cellcolor{green!50}3.88&2.35&\cellcolor{green!50}2.20\\
+%			o\_h\_60\_s\_fn&60.93&\cellcolor{green!50}57.28&5.92&\cellcolor{green!50}4.15&2.36&\cellcolor{green!50}2.27\\
+%			o\_h\_120\_s\_n&61.06&\cellcolor{green!50}53.28&5.74&\cellcolor{green!50}4.15&2.36&\cellcolor{green!50}2.09\\
+%			o\_h\_30\_s\_n&61.09&\cellcolor{green!50}55.71&7.77&\cellcolor{green!50}3.69&2.36&\cellcolor{green!50}2.35\\
+%			o\_h\_30\_s\_fn&61.56&\cellcolor{green!50}55.69&5.73&\cellcolor{green!50}3.85&2.36&\cellcolor{green!50}2.16\\
+%			o\_v\_60\_s\_n&61.58&\cellcolor{green!50}56.56&5.73&\cellcolor{green!50}3.66&2.36&\cellcolor{green!50}2.33\\
+%			o\_h\_60\_s\_n&60.64&\cellcolor{green!50}53.80&6.05&\cellcolor{green!50}3.76&2.36&\cellcolor{green!50}2.19\\
+%			o\_v\_120\_s\_n&59.39&\cellcolor{green!50}55.31&5.80&\cellcolor{green!50}3.72&2.36&\cellcolor{green!50}2.25\\
+%			o\_v\_60\_s\_fn&61.98&\cellcolor{green!50}61.94&5.69&\cellcolor{green!50}3.71&\cellcolor{green!50}2.36&2.63\\
+%			o\_h\_120\_s\_nc&61.18&\cellcolor{green!50}53.27&6.06&\cellcolor{green!50}3.86&2.35&\cellcolor{green!50}2.20\\
+%			o\_v\_30\_s\_nc&61.80&\cellcolor{green!50}52.56&5.82&\cellcolor{green!50}3.66&2.36&\cellcolor{green!50}2.16\\
+%			o\_v\_120\_s\_fn&58.53&\cellcolor{green!50}57.01&5.96&\cellcolor{green!50}3.81&\cellcolor{green!50}2.36&2.47\\
+%			o\_h\_60\_s\_nc&62.24&\cellcolor{green!50}51.79&3.86&\cellcolor{green!50}3.58&2.35&\cellcolor{green!50}1.11\\
+%			o\_h\_60\_s\_fc&\cellcolor{green!50}0.12&0.14&\cellcolor{green!50}2.41&2.72&0.01&\cellcolor{green!50}0.01\\
+%			o\_h\_30\_s\_fc&64.88&\cellcolor{green!50}60.71&3.71&\cellcolor{green!50}3.56&2.35&\cellcolor{green!50}1.21\\
+%			o\_h\_30\_s\_nc&63.63&\cellcolor{green!50}52.33&3.75&\cellcolor{green!50}3.62&2.35&\cellcolor{green!50}0.95\\
+%			
+%			\bottomrule
+%			\multicolumn{7}{l}{Legend: 1\_2\_3\_4\_5}\\
+%			\multicolumn{7}{l}{1 (environment): o -- outside}\\
+%			\multicolumn{7}{l}{2 (cellphone position): h -- horizontal; v -- vertical}\\
+%			\multicolumn{7}{l}{3 (duration)}\\
+%			\multicolumn{7}{l}{4 (illumination): s -- sunny}\\
+%			\multicolumn{7}{l}{5 (shooting angle): n -- normal; fn -- floor-normal; fc -- floor-ceiling; nc -- normal-ceiling}\\
+%			\bottomrule
+%		\end{tabular}
+%	}
+%\end{table}
+%
+%\pagebreak
+%\begin{table}[H]
+%	\resizebox{\textwidth}{!}{%
+%		\begin{tabular}{lN{.12}N{.12}N{.12}N{.12}N{.12}N{.12}}
+%			\toprule
+%			\multirow{2}{*}{\textbf{Scene}} & \multicolumn{2}{c}{\textbf{Max PSNR}}      & \multicolumn{2}{c}{\textbf{Max SSIM}}        & \multicolumn{2}{c}{\textbf{Min LPIPS}}        \\
+%			& \textbf{Nerfacto} & \textbf{Splatfacto} & \textbf{Nerfacto} & \textbf{Splatfacto} & \textbf{Nerfacto} & \textbf{Splatfacto} \\
+%			\midrule		
+%			o\_v\_120\_s\_fc&19.53&\cellcolor{green!50}25.46&0.55&\cellcolor{green!50}0.85&0.24&\cellcolor{green!50}0.11\\
+%			o\_v\_120\_s\_nc&21.39&\cellcolor{green!50}26.71&0.70&\cellcolor{green!50}0.89&0.19&\cellcolor{green!50}0.09\\
+%			o\_v\_30\_s\_fn&20.47&\cellcolor{green!50}25.00&0.64&\cellcolor{green!50}0.85&0.23&\cellcolor{green!50}0.13\\
+%			o\_v\_30\_s\_fc&20.01&\cellcolor{green!50}25.78&0.56&\cellcolor{green!50}0.86&0.33&\cellcolor{green!50}0.10\\
+%			o\_v\_30\_s\_n&20.20&\cellcolor{green!50}29.28&0.49&\cellcolor{green!50}0.93&0.32&\cellcolor{green!50}0.07\\
+%			o\_v\_60\_s\_fc&20.30&\cellcolor{green!50}25.72&0.60&\cellcolor{green!50}0.86&0.23&\cellcolor{green!50}0.10\\
+%			o\_v\_60\_s\_nc&20.99&\cellcolor{green!50}28.60&0.64&\cellcolor{green!50}0.92&0.18&\cellcolor{green!50}0.08\\
+%			o\_h\_120\_s\_fn&21.18&\cellcolor{green!50}27.17&0.59&\cellcolor{green!50}0.88&0.27&\cellcolor{green!50}0.08\\
+%			o\_h\_120\_s\_fc&20.41&\cellcolor{green!50}26.51&0.54&\cellcolor{green!50}0.87&0.26&\cellcolor{green!50}0.08\\
+%			o\_h\_60\_s\_fn&21.52&\cellcolor{green!50}27.63&0.65&\cellcolor{green!50}0.90&0.17&\cellcolor{green!50}0.07\\
+%			o\_h\_120\_s\_n&22.69&\cellcolor{green!50}28.61&0.71&\cellcolor{green!50}0.91&0.13&\cellcolor{green!50}0.06\\
+%			o\_h\_30\_s\_n&25.09&\cellcolor{green!50}30.31&0.82&\cellcolor{green!50}0.94&0.11&\cellcolor{green!50}0.05\\
+%			o\_h\_30\_s\_fn&22.60&\cellcolor{green!50}28.21&0.72&\cellcolor{green!50}0.91&0.15&\cellcolor{green!50}0.07\\
+%			o\_v\_60\_s\_n&20.66&\cellcolor{green!50}26.64&0.63&\cellcolor{green!50}0.90&0.21&\cellcolor{green!50}0.10\\
+%			o\_h\_60\_s\_n&24.84&\cellcolor{green!50}29.43&0.82&\cellcolor{green!50}0.92&0.12&\cellcolor{green!50}0.06\\
+%			o\_v\_120\_s\_n&19.74&\cellcolor{green!50}25.52&0.58&\cellcolor{green!50}0.89&0.21&\cellcolor{green!50}0.11\\
+%			o\_v\_60\_s\_fn&20.33&\cellcolor{green!50}25.13&0.64&\cellcolor{green!50}0.85&0.23&\cellcolor{green!50}0.12\\
+%			o\_h\_120\_s\_nc&21.26&\cellcolor{green!50}28.04&0.62&\cellcolor{green!50}0.90&0.14&\cellcolor{green!50}0.07\\
+%			o\_v\_30\_s\_nc&21.41&\cellcolor{green!50}28.92&0.68&\cellcolor{green!50}0.93&0.16&\cellcolor{green!50}0.08\\
+%			o\_v\_120\_s\_fn&19.66&\cellcolor{green!50}24.79&0.58&\cellcolor{green!50}0.85&0.24&\cellcolor{green!50}0.13\\
+%			o\_h\_60\_s\_nc&&&&&&\\
+%			o\_h\_60\_s\_fc&&&&&&\\
+%			o\_h\_30\_s\_fc&&&&&&\\
+%			o\_h\_30\_s\_nc&&&&&&\\
+%			\bottomrule
+%			\multicolumn{7}{l}{Legend: 1\_2\_3\_4\_5}\\
+%			\multicolumn{7}{l}{1 (environment): o -- outside}\\
+%			\multicolumn{7}{l}{2 (cellphone position): h -- horizontal; v -- vertical}\\
+%			\multicolumn{7}{l}{3 (duration)}\\
+%			\multicolumn{7}{l}{4 (illumination): s -- sunny}\\
+%			\multicolumn{7}{l}{5 (shooting angle): n -- normal; fn -- floor-normal; fc -- floor-ceiling; nc -- normal-ceiling}\\
+%			\bottomrule
+%		\end{tabular}
+%	}
+%\end{table}
+%
+%\pagebreak
+%\begin{table}[H]
+%	\resizebox{\textwidth}{!}{%
+%		\begin{tabular}{lN{.12}N{.12}N{.12}N{.12}N{.12}N{.12}}
+%			\toprule
+%			\multirow{2}{*}{\textbf{Cena}} & \multicolumn{2}{c}{\textbf{Max PSNR Iteration}}      & \multicolumn{2}{c}{\textbf{Max Iteration SSIM}}        & \multicolumn{2}{c}{\textbf{Min LPIPS Iteration}}        \\
+%			& \textbf{Nerfacto} & \textbf{Splatfacto} & \textbf{Nerfacto} & \textbf{Splatfacto} & \textbf{Nerfacto} & \textbf{Splatfacto} \\
+%			\midrule		
+%			o\_v\_120\_s\_fc&\cellcolor{green!50}10k&30k&99k&\cellcolor{green!50}70k&99k&\cellcolor{green!50}70k\\
+%			o\_v\_120\_s\_nc&60k&\cellcolor{green!50}50k&99k&\cellcolor{green!50}90k&99k&\cellcolor{green!50}90k\\
+%			o\_v\_30\_s\_fn&60k&\cellcolor{green!50}30k&99k&\cellcolor{green!50}70k&99k&\cellcolor{green!50}30k\\
+%			o\_v\_30\_s\_fc&\cellcolor{green!50}10k&40k&\cellcolor{green!50}10k&80k&\cellcolor{green!50}10k&70k\\
+%			o\_v\_30\_s\_n&\cellcolor{green!50}10k&20k&\cellcolor{green!50}10k&40k&\cellcolor{green!50}10k&20k\\
+%			o\_v\_60\_s\_fc&\cellcolor{green!50}20k&30k&99k&\cellcolor{green!50}80k&99k&\cellcolor{green!50}80k\\
+%			o\_v\_60\_s\_nc&\cellcolor{green!50}20k&30k&99k&\cellcolor{green!50}70k&99k&\cellcolor{green!50}30k\\
+%			o\_h\_120\_s\_fn&\cellcolor{green!50}10k&40k&\cellcolor{green!50}10k&70k&\cellcolor{green!50}10k&50k\\
+%			o\_h\_120\_s\_fc&\cellcolor{green!50}10k&30k&\cellcolor{green!50}20k&50k&\cellcolor{green!50}20k&40k\\
+%			o\_h\_60\_s\_fn&90k&\cellcolor{green!50}50k&99k&\cellcolor{green!50}50k&99k&\cellcolor{green!50}50k\\
+%			o\_h\_120\_s\_n&99k&\cellcolor{green!50}40k&99k&\cellcolor{green!50}50k&99k&\cellcolor{green!50}40k\\
+%			o\_h\_30\_s\_n&90k&\cellcolor{green!50}50k&99k&\cellcolor{green!50}50k&99k&\cellcolor{green!50}50k\\
+%			o\_h\_30\_s\_fn&80k&\cellcolor{green!50}40k&99k&\cellcolor{green!50}60k&99k&\cellcolor{green!50}40k\\
+%			o\_v\_60\_s\_n&40k&\cellcolor{green!50}30k&99k&\cellcolor{green!50}40k&99k&\cellcolor{green!50}40k\\
+%			o\_h\_60\_s\_n&99k&\cellcolor{green!50}30k&99k&\cellcolor{green!50}50k&99k&\cellcolor{green!50}40k\\
+%			o\_v\_120\_s\_n&\cellcolor{green!50}10k&90k&90k&\cellcolor{green!50}80k&99k&\cellcolor{green!50}90k\\
+%			o\_v\_60\_s\_fn&99k&\cellcolor{green!50}50k&99k&\cellcolor{green!50}60k&99k&\cellcolor{green!50}50k\\
+%			o\_h\_120\_s\_nc&99k&\cellcolor{green!50}40k&99k&\cellcolor{green!50}50k&99k&\cellcolor{green!50}50k\\
+%			o\_v\_30\_s\_nc&40k&\cellcolor{green!50}30k&99k&\cellcolor{green!50}50k&99k&\cellcolor{green!50}30k\\
+%			o\_v\_120\_s\_fn&30k&\cellcolor{green!50}30k&80k&\cellcolor{green!50}60k&99k&\cellcolor{green!50}60k\\
+%			o\_h\_60\_s\_nc&&&&&&\\
+%			o\_h\_60\_s\_fc&&&&&&\\
+%			o\_h\_30\_s\_fc&&&&&&\\
+%			o\_h\_30\_s\_nc&&&&&&\\
+%			\bottomrule
+%			\multicolumn{7}{l}{Legend: 1\_2\_3\_4\_5}\\
+%			\multicolumn{7}{l}{1 (environment): o -- outside}\\
+%			\multicolumn{7}{l}{2 (cellphone position): h -- horizontal; v -- vertical}\\
+%			\multicolumn{7}{l}{3 (duration)}\\
+%			\multicolumn{7}{l}{4 (illumination): s -- sunny}\\
+%			\multicolumn{7}{l}{5 (shooting angle): n -- normal; fn -- floor-normal; fc -- floor-ceiling; nc -- normal-ceiling}\\
+%			\bottomrule
+%		\end{tabular}
+%	}
+%\end{table}
+%
+%\pagebreak
+\begin{center}
+	\textbf{\huge Splatfacto}
+\end{center}\strut\\[-1.4cm]
+\begin{table}[H]
+	\resizebox{\textwidth}{!}{%
+		\begin{tabular}{lN{.12}N{.12}N{.12}N{.12}N{.12}N{.12}}
+			\toprule
+			\multirow{2}{*}{\textbf{Scene}} & \multicolumn{2}{c}{\textbf{Time}}      & \multicolumn{2}{c}{\textbf{RAM}}        & \multicolumn{2}{c}{\textbf{GPU}}        \\
+			& \textbf{Nerfacto} & \textbf{Splatfacto} & \textbf{Nerfacto} & \textbf{Splatfacto} & \textbf{Nerfacto} & \textbf{Splatfacto} \\
+			\midrule		
+			\textbf{IMG\_7724}&60.10&\cellcolor{green!50}28.67&10.64&\cellcolor{green!50}4.77&2.35&\cellcolor{green!50}1.09\\
+			IMG\_7725&61.60&\cellcolor{green!50}29.38&9.30&\cellcolor{green!50}4.55&2.36&\cellcolor{green!50}1.28\\
+			\textbf{IMG\_7726}&61.45&\cellcolor{green!50}27.61&7.13&\cellcolor{green!50}4.51&2.35&\cellcolor{green!50}1.08\\
+			IMG\_7727&61.65&\cellcolor{green!50}28.60&7.35&\cellcolor{green!50}4.46&2.36&\cellcolor{green!50}1.14\\
+			\textbf{IMG\_7728}&61.51&\cellcolor{green!50}29.07&7.33&\cellcolor{green!50}4.89&2.36&\cellcolor{green!50}1.11\\
+			IMG\_7729&61.61&\cellcolor{green!50}30.44&7.44&\cellcolor{green!50}4.72&2.36&\cellcolor{green!50}1.17\\
+			IMG\_7730&62.86&\cellcolor{green!50}19.41&5.19&\cellcolor{green!50}4.63&2.35&\cellcolor{green!50}0.54\\
+			IMG\_7731&61.13&\cellcolor{green!50}28.38&8.14&\cellcolor{green!50}4.59&2.36&\cellcolor{green!50}1.16\\
+			IMG\_7732&65.48&\cellcolor{green!50}30.10&5.17&\cellcolor{green!50}4.49&2.35&\cellcolor{green!50}0.54\\
+			
+			\bottomrule
+			\multicolumn{7}{l}{Legend: 1\_2\_3\_4\_5}\\
+			\multicolumn{7}{l}{1 (environment): o -- outside}\\
+			\multicolumn{7}{l}{2 (cellphone position): h -- horizontal; v -- vertical}\\
+			\multicolumn{7}{l}{3 (duration)}\\
+			\multicolumn{7}{l}{4 (illumination): s -- sunny}\\
+			\multicolumn{7}{l}{5 (shooting angle): n -- normal; fn -- floor-normal; fc -- floor-ceiling; nc -- normal-ceiling}\\
+			\bottomrule
+		\end{tabular}
+	}
+\end{table}
+
+\pagebreak
+\begin{center}
+	\textbf{\huge Splatfacto}
+\end{center}\strut\\[-1.4cm]
+\begin{table}[H]
+	\resizebox{\textwidth}{!}{%
+		\begin{tabular}{lN{.12}N{.12}N{.12}N{.12}N{.12}N{.12}}
+			\toprule
+			\multirow{2}{*}{\textbf{Cena}} & \multicolumn{2}{c}{\textbf{Max PSNR}}      & \multicolumn{2}{c}{\textbf{Max SSIM}}        & \multicolumn{2}{c}{\textbf{Min LPIPS}}        \\
+			& \textbf{Nerfacto} & \textbf{Splatfacto} & \textbf{Nerfacto} & \textbf{Splatfacto} & \textbf{Nerfacto} & \textbf{Splatfacto} \\
+			\midrule		
+			\textbf{IMG\_7724}&31.80&\cellcolor{green!50}39.63&0.97&\cellcolor{green!50}0.98&0.08&\cellcolor{green!50}0.07\\
+			IMG\_7725&31.29&\cellcolor{green!50}38.54&0.97&\cellcolor{green!50}0.98&0.08&\cellcolor{green!50}0.07\\
+			\textbf{IMG\_7726}&32.59&\cellcolor{green!50}38.14&0.97&\cellcolor{green!50}0.98&0.08&\cellcolor{green!50}0.07\\
+			IMG\_7727&27.98&\cellcolor{green!50}37.52&0.96&\cellcolor{green!50}0.98&0.10&\cellcolor{green!50}0.08\\
+			\textbf{IMG\_7728}&28.09&\cellcolor{green!50}35.89&0.96&\cellcolor{green!50}0.98&0.11&\cellcolor{green!50}0.09\\
+			IMG\_7729&23.34&\cellcolor{green!50}36.68&0.95&\cellcolor{green!50}0.97&0.12&\cellcolor{green!50}0.08\\
+			IMG\_7730&&&&&&\\
+			IMG\_7731&28.75&\cellcolor{green!50}37.65&0.96&\cellcolor{green!50}0.98&0.11&\cellcolor{green!50}0.09\\
+			IMG\_7732&&&&&&\\
+			
+			
+			\bottomrule
+			\multicolumn{7}{l}{Legend: 1\_2\_3\_4\_5}\\
+			\multicolumn{7}{l}{1 (environment): o -- outside}\\
+			\multicolumn{7}{l}{2 (cellphone position): h -- horizontal; v -- vertical}\\
+			\multicolumn{7}{l}{3 (duration)}\\
+			\multicolumn{7}{l}{4 (illumination): s -- sunny}\\
+			\multicolumn{7}{l}{5 (shooting angle): n -- normal; fn -- floor-normal; fc -- floor-ceiling; nc -- normal-ceiling}\\
+			\bottomrule
+		\end{tabular}
+	}
+\end{table}
+
+\pagebreak
+\begin{center}
+	\textbf{\huge Splatfacto}
+\end{center}\strut\\[-1.4cm]
+\begin{table}[H]
+	\resizebox{\textwidth}{!}{%
+		\begin{tabular}{lN{.12}N{.12}N{.12}N{.12}N{.12}N{.12}}
+			\toprule
+			\multirow{2}{*}{\textbf{Cena}} & \multicolumn{2}{c}{\textbf{Max PSNR Iteration}}      & \multicolumn{2}{c}{\textbf{Max Iteration SSIM}}        & \multicolumn{2}{c}{\textbf{Min LPIPS Iteration}}        \\
+			& \textbf{Nerfacto} & \textbf{Splatfacto} & \textbf{Nerfacto} & \textbf{Splatfacto} & \textbf{Nerfacto} & \textbf{Splatfacto} \\
+			\midrule		
+			\textbf{IMG\_7724}&\cellcolor{green!50}10k&70k&30k&\cellcolor{green!50}30k&\cellcolor{green!50}20k&80k\\
+			IMG\_7725&\cellcolor{green!50}20k&30k&99k&\cellcolor{green!50}30k&40k&\cellcolor{green!50}30k\\
+			\textbf{IMG\_7726}&\cellcolor{green!50}60k&70k&99k&\cellcolor{green!50}30k&50k&\cellcolor{green!50}40k\\
+			IMG\_7727&\cellcolor{green!50}40k&99k&80k&\cellcolor{green!50}70k&60k&\cellcolor{green!50}50k\\
+			\textbf{IMG\_7728}&\cellcolor{green!50}40k&90k&99k&\cellcolor{green!50}60k&\cellcolor{green!50}70k&99k\\
+			IMG\_7729&50k&\cellcolor{green!50}50k&80k&\cellcolor{green!50}70k&80k&\cellcolor{green!50}60k\\
+			IMG\_7730&&&&&&\\
+			IMG\_7731&\cellcolor{green!50}30k&90k&\cellcolor{green!50}70k&90k&\cellcolor{green!50}40k&90k\\
+			IMG\_7732&&&&&&\\
+			
+			\bottomrule
+			\multicolumn{7}{l}{Legend: 1\_2\_3\_4\_5}\\
+			\multicolumn{7}{l}{1 (environment): o -- outside}\\
+			\multicolumn{7}{l}{2 (cellphone position): h -- horizontal; v -- vertical}\\
+			\multicolumn{7}{l}{3 (duration)}\\
+			\multicolumn{7}{l}{4 (illumination): s -- sunny}\\
+			\multicolumn{7}{l}{5 (shooting angle): n -- normal; fn -- floor-normal; fc -- floor-ceiling; nc -- normal-ceiling}\\
+			\bottomrule
+		\end{tabular}
+	}
+\end{table}
+
+\end{document}
