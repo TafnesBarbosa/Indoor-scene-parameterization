@@ -1,9 +1,9 @@
 cff-version: 1.2.0
 message: "If you use this repo, please cite it as below."
 authors:
-  - family-names: Barbosa
-    given-names: Tafnes
+  - family-names: author surname
+    given-names: author name
 title: "Indoor Scene Parameterization"
 version: 1.0.0
 date-released: 2024-08-23
-url: "https://github.com/TafnesBarbosa/Indoor-scene-parameterization.git"
+url: "https://github.com/UserName/Indoor-scene-parameterization.git"

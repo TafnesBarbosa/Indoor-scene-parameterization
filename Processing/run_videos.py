@@ -214,6 +214,6 @@ def main(source_folder, destination_folder, colmap=True, nerfacto=True, splatfac
             print(f'Starting {k+1}/{len(files)}')
             get_evaluations(source_folder, file, destination_folder + '/Evaluations_splatfacto', 'splatfacto')
 
-source_folder = '/media/tafnes/0E94B37D94B365BD/Users/tafne/Documents/new_gaussians'
-destination_folder = '/home/tafnes/Documentos/Python/Artigo/new gaussians'
+source_folder = '/media/user/0E94B37D94B365BD/Users/user/Documents/new_gaussians'
+destination_folder = '/home/user/Documentos/Python/Artigo/new gaussians'
 main(source_folder, destination_folder, colmap=True, nerfacto=True, splatfacto=True)

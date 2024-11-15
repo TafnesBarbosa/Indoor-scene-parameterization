@@ -51,7 +51,7 @@ def print_progress_bar(iteration, total, bar_length=50):
 
 
 DIRS = []
-source_path = '/media/tafnes/0E94B37D94B365BD/Users/tafne/Documents/new_gaussians'
+source_path = '/media/user/0E94B37D94B365BD/Users/user/Documents/new_gaussians'
 files = os.listdir(source_path)
 for file in files:
     if os.path.isdir(os.path.join(source_path, file)) and not file.startswith('.'):
